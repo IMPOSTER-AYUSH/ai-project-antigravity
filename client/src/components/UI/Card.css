@@ -1,0 +1,23 @@
+.card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+}
+
+.card-pd-none { padding: 0; }
+.card-pd-sm { padding: 12px; }
+.card-pd-md { padding: 24px; }
+.card-pd-lg { padding: 32px; }
+
+.card-hoverable {
+  cursor: pointer;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.card-hoverable:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-glass-hover);
+}

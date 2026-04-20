@@ -1,0 +1,106 @@
+/* Student Dashboard Redesign */
+
+.dashboard-page {
+  padding: 0 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header */
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-accent { color: var(--accent-primary); }
+
+/* Stats Grid */
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 640px) {
+  .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Stat Cards */
+.stat-card {
+  display: flex !important;
+  align-items: center;
+  gap: 20px;
+  border-radius: 24px !important;
+  border: 1px solid var(--border-glass) !important;
+  background: var(--bg-secondary) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+.stat-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.bg-accent-glass { background: rgba(99, 102, 241, 0.15); }
+.text-accent { color: #6366f1; }
+
+.bg-success-glass { background: rgba(16, 185, 129, 0.15); }
+.text-success { color: #10b981; }
+
+.bg-info-glass { background: rgba(59, 130, 246, 0.15); }
+.text-info { color: #3b82f6; }
+
+.bg-warning-glass { background: rgba(245, 158, 11, 0.15); }
+.text-warning { color: #f59e0b; }
+
+.stat-info { display: flex; flex-direction: column; }
+.stat-label { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 4px; font-weight: 500; }
+.stat-value { font-size: 2rem; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2; }
+
+/* Section Headers */
+.dashboard-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.view-all-btn {
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+/* Recommended Courses Grid */
+.dashboard-courses-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 28px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-courses-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1200px) {
+  .dashboard-courses-grid { grid-template-columns: repeat(3, 1fr); }
+}
