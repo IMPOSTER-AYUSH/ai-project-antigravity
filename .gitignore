@@ -11,6 +11,12 @@ server/node_modules/
 .env.production.local
 **/.env
 **/.env.*
+!.env.example
+!**/.env.example
+
+# Uploads
+server/uploads/
+uploads/
 
 # Build Outputs
 dist/
