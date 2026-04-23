@@ -1,7 +1,7 @@
 const ChatHistory = require('../models/ChatHistory');
 const AppError = require('../utils/AppError');
 
-// @desc    Send message and get AI response (Ollama Local)
+// @desc    Send message and get AI response (Groq API)
 // @route   POST /api/chat/message
 exports.sendMessage = async (req, res, next) => {
   try {
@@ -31,34 +31,43 @@ exports.sendMessage = async (req, res, next) => {
     chatHistory.messages.push({ role: 'user', content: message });
 
     try {
-      const response = await fetch("http://localhost:11434/api/generate", {
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "phi3",
-          prompt: `You are an expert AI tutor. Give a detailed, well-structured answer with explanations, examples, and proper formatting:\n${message}`,
-          stream: false
+          model: "llama-3.1-8b-instant",
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert AI tutor. Give a detailed, well-structured answer with explanations, examples, and proper formatting."
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ],
         }),
       });
 
       if (!response.ok) {
-        console.error("Ollama HTTP Error");
-        return res.json({ error: "Local AI failed" });
+        console.error("Groq API Error");
+        return res.json({ error: "AI service failed" });
       }
 
       const data = await response.json();
-      const text = data.response || "No response";
+      const text = data.choices[0].message.content || "No response";
 
       // Save assistant response
       chatHistory.messages.push({ role: 'assistant', content: text });
       await chatHistory.save();
 
-      res.json({ text: data.response });
+      res.json({ text });
     } catch (error) {
-      console.error("Ollama error:", error);
-      res.json({ error: "Local AI not running" });
+      console.error("Groq error:", error);
+      res.json({ error: "AI service not available" });
     }
   } catch (error) {
     console.error("Internal server error:", error);
