@@ -17,12 +17,6 @@ const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 
-// Create uploads directory
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
@@ -45,19 +39,25 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'LearnAI API is running' });
 });
 
+// Root check
+app.get('/', (req, res) => {
+  res.status(200).json({ success: true, message: 'LearnAI API Root' });
+});
+
 // Error handler
 app.use(errorHandler);
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// Connect to Database
+connectDB();
 
-const startServer = async () => {
-  await connectDB();
+// Start server logic (only for local development)
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`\n🚀 LearnAI Server running on port ${PORT}`);
     console.log(`📡 API: http://localhost:${PORT}/api`);
     console.log(`🌐 Client: ${process.env.CLIENT_URL || 'http://localhost:5173'}\n`);
   });
-};
+}
 
-startServer();
+module.exports = app;
