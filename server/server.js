@@ -19,17 +19,30 @@ const uploadRoutes = require('./routes/uploadRoutes');
 
 const app = express();
 
-// ✅ IMPORTANT: Connect DB (without app.listen)
-connectDB().catch(err => console.error("DB Error:", err));
+// ✅ Connect DB safely (important for serverless)
+let isConnected = false;
+const connectDatabase = async () => {
+  if (isConnected) return;
+  try {
+    await connectDB();
+    isConnected = true;
+    console.log("✅ MongoDB Connected");
+  } catch (err) {
+    console.error("❌ DB Error:", err);
+  }
+};
 
-// ⚠️ Avoid filesystem writes in Vercel (optional safe check)
+// Call DB connection
+connectDatabase();
+
+// ⚠️ Use temp directory for uploads (Vercel safe)
 try {
-  const uploadsDir = path.join('/tmp', 'uploads'); // Vercel temp dir
+  const uploadsDir = path.join('/tmp', 'uploads');
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
 } catch (err) {
-  console.warn("FS warning:", err.message);
+  console.warn("⚠️ FS warning:", err.message);
 }
 
 // Middleware
@@ -41,6 +54,11 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+
+// ✅ ROOT ROUTE (fixes "Cannot GET /")
+app.get('/', (req, res) => {
+  res.status(200).send('🚀 LearnAI API is running on Vercel');
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -54,15 +72,12 @@ app.use('/api/upload', uploadRoutes);
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Server running on Vercel 🚀',
+    message: 'API is healthy 🚀',
   });
 });
 
 // Error handler
 app.use(errorHandler);
 
-// ❌ REMOVE app.listen()
-// ❌ REMOVE startServer()
-
-// ✅ EXPORT app for Vercel
+// ✅ EXPORT (NO app.listen)
 module.exports = app;
